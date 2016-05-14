@@ -18,8 +18,15 @@ class GameScene: SKScene {
         backgroundColor = SKColor.whiteColor()
         // set starting position
         player.position = CGPoint(x: size.width * 0.1, y: size.height * 0.5)
-        // create sprite in the view
+        // create sprite
         addChild(player)
+        // create monsters
+        runAction(SKAction.repeatActionForever(
+            SKAction.sequence([
+                SKAction.runBlock(addMonster),
+                SKAction.waitForDuration(1.0)
+                ])
+            ))
     }
     // creates a random number
     func random() -> CGFloat {
