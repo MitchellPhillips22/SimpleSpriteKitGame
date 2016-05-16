@@ -50,7 +50,7 @@ struct PhysicsCategory {
 }
 
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //MARK: - Set up player sprite
     let player = SKSpriteNode(imageNamed: "player")
