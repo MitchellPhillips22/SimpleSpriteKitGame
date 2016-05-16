@@ -62,6 +62,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.position = CGPoint(x: size.width * 0.1, y: size.height * 0.5)
         // create sprite
         addChild(player)
+        // set gravity to none and set scene as the delegate
+        physicsWorld.gravity = CGVectorMake(0, 0)
+        physicsWorld.contactDelegate = self
         // create monsters
         runAction(SKAction.repeatActionForever(
             SKAction.sequence([
@@ -95,6 +98,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Add the monster to the scene
         addChild(monster)
         
+        // Add physics qualities to monster
+        monster.physicsBody = SKPhysicsBody(rectangleOfSize: monster.size)
+        monster.physicsBody?.dynamic = true
+        monster.physicsBody?.categoryBitMask = PhysicsCategory.Monster
+        monster.physicsBody?.contactTestBitMask = PhysicsCategory.Projectile
+        monster.physicsBody?.collisionBitMask = PhysicsCategory.None
+        
         // Determine speed of the monster
         let actualSpeed = random(min: CGFloat(2.0), max: CGFloat(4.0))
         
@@ -126,6 +136,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Cancel shot if you are shooting down or backwards
         if (offset.x < 0) { return }
         
+        // Projectile collision set up
+        projectile.physicsBody = SKPhysicsBody(circleOfRadius: projectile.size.width/2)
+        projectile.physicsBody?.dynamic = true
+        projectile.physicsBody?.categoryBitMask = PhysicsCategory.Projectile
+        projectile.physicsBody?.contactTestBitMask = PhysicsCategory.Monster
+        projectile.physicsBody?.collisionBitMask = PhysicsCategory.None
+        projectile.physicsBody?.usesPreciseCollisionDetection = true
+        
         // Add projectile after double-checking direction of shot
         addChild(projectile)
         
@@ -143,6 +161,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let actionMoveDone = SKAction.removeFromParent()
         projectile.runAction(SKAction.sequence([actionMove, actionMoveDone]))
         
+    }
+    //MARK: - Projectile Collision Actions
+    func projectileDidCollideWithMonster(projectile:SKSpriteNode, monster:SKSpriteNode) {
+        print("Hit")
+        projectile.removeFromParent()
+        monster.removeFromParent()
     }
 
 }
