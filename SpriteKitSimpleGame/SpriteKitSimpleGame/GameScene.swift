@@ -58,6 +58,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMoveToView(view: SKView) {
         // set background color
         backgroundColor = SKColor.whiteColor()
+        // background music
+        let backgroundMusic = SKAudioNode(fileNamed: "background-music-aac.caf")
+        backgroundMusic.autoplayLooped = true
+        addChild(backgroundMusic)
         // set starting position
         player.position = CGPoint(x: size.width * 0.1, y: size.height * 0.5)
         // create sprite
@@ -161,6 +165,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let actionMoveDone = SKAction.removeFromParent()
         projectile.runAction(SKAction.sequence([actionMove, actionMoveDone]))
         
+        // Projectile sound effect
+        runAction(SKAction.playSoundFileNamed("pew-pew-lei.caf", waitForCompletion: false))
     }
     //MARK: - Projectile Collision Actions
     func projectileDidCollideWithMonster(projectile:SKSpriteNode, monster:SKSpriteNode) {
