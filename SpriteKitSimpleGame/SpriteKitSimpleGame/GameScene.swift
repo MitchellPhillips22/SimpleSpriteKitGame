@@ -57,6 +57,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var monstersDestroyed = 0
     
+    let scoreLabel = SKLabelNode(fontNamed: "Helvetica")
+    
     override func didMoveToView(view: SKView) {
         // set background color
         backgroundColor = SKColor.whiteColor()
@@ -78,6 +80,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 SKAction.waitForDuration(1.0)
                 ])
             ))
+        scoreLabel.fontSize = 20
+        scoreLabel.position = CGPoint(x: 50, y: 50)
+        scoreLabel.fontColor = UIColor.blackColor()
+        addChild(scoreLabel)
     }
     //MARK: - Create a random number
     func random() -> CGFloat {
@@ -92,7 +98,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func addMonster() {
         
         // Create sprite
-        let monster = SKSpriteNode(imageNamed: "monster")
+        let monster = SKSpriteNode(imageNamed: "Goblin")
         
         // Determine where to spawn the monster along the Y axis
         let actualY = random(min: monster.size.height/2, max: size.height - monster.size.height/2)
@@ -172,13 +178,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     //MARK: - Projectile Collision Actions
     func projectileDidCollideWithMonster(projectile:SKSpriteNode, monster:SKSpriteNode) {
-        print("Hit")
+        monstersDestroyed += 1
+        print("\(monstersDestroyed)")
+        scoreLabel.text = "Score: \(monstersDestroyed)"
         projectile.removeFromParent()
         monster.removeFromParent()
+        
         // keep score
-        monstersDestroyed += 1
-        if (monstersDestroyed > 10) {
-            let reveal = SKTransition.flipHorizontalWithDuration(0.5)
+        if (monstersDestroyed >= 20) {
+            let reveal = SKTransition.flipHorizontalWithDuration(2)
             let gameOverScene = GameOverScene(size: self.size, won: true)
             self.view?.presentScene(gameOverScene, transition: reveal)
         }
