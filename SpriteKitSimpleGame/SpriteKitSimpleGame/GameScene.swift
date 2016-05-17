@@ -55,6 +55,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: - Set up player sprite
     let player = SKSpriteNode(imageNamed: "player")
     
+    var monstersDestroyed = 0
+    
     override func didMoveToView(view: SKView) {
         // set background color
         backgroundColor = SKColor.whiteColor()
@@ -173,6 +175,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         print("Hit")
         projectile.removeFromParent()
         monster.removeFromParent()
+        // keep score
+        monstersDestroyed += 1
+        if (monstersDestroyed > 10) {
+            let reveal = SKTransition.flipHorizontalWithDuration(0.5)
+            let gameOverScene = GameOverScene(size: self.size, won: true)
+            self.view?.presentScene(gameOverScene, transition: reveal)
+        }
     }
     //MARK: - Contact Delegate Methods
     func didBeginContact(contact: SKPhysicsContact) {
