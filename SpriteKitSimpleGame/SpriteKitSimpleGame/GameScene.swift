@@ -58,6 +58,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var monstersDestroyed = 0
     
+    var playerDestroyed = false
+    
     let scoreLabel = SKLabelNode(fontNamed: "Helvetica")
     
     override func didMoveToView(view: SKView) {
@@ -132,6 +134,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let actionMove = SKAction.moveTo(CGPoint(x: -monster.size.width/2, y: actualY), duration: NSTimeInterval(actualSpeed))
         // !this is important to not over-load the memory of the decvice!
         let actionMoveDone = SKAction.removeFromParent()
+        
+//        let escapedMonsters = monster.position
         // Apply the actions to the monster
         monster.runAction(SKAction.sequence([actionMove, actionMoveDone]))
         
@@ -199,11 +203,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.view?.presentScene(gameOverScene, transition: reveal)
         }
     }
+    func monsterDidCollideWithPlayer(monster:SKSpriteNode, player:SKSpriteNode) {
+        print("player hit")
+        playerDestroyed = true
+
+        player.removeFromParent()
+        
+        if playerDestroyed == true {
+            let reveal = SKTransition.flipVerticalWithDuration(2)
+            let gameOverScene = GameOverScene(size: self.size, won: false)
+            self.view?.presentScene(gameOverScene, transition: reveal)
+        }
+    }
     //MARK: - Contact Delegate Methods
     func didBeginContact(contact: SKPhysicsContact) {
         
         var firstBody: SKPhysicsBody
         var secondBody: SKPhysicsBody
+        var thirdBody: SKPhysicsBody
         if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
             firstBody = contact.bodyA
             secondBody = contact.bodyB
@@ -211,6 +228,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             firstBody = contact.bodyB
             secondBody = contact.bodyA
         }
+        
 
         if ((firstBody.categoryBitMask & PhysicsCategory.Monster != 0) &&
             (secondBody.categoryBitMask & PhysicsCategory.Projectile != 0)) {
