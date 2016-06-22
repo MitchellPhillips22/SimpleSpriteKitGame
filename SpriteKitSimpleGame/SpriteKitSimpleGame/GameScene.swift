@@ -54,7 +54,7 @@ struct PhysicsCategory {
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //MARK: - Set up player sprite
-    let player = SKSpriteNode(imageNamed: "player")
+    let player = SKSpriteNode(imageNamed: "Wizard")
     
     var monstersDestroyed = 0
     
